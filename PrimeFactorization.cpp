@@ -23,47 +23,42 @@ void print_prime_factors(std::vector<int>&, _OutputFormat);
 /// </summary>
 /// <param name="n">integer to be ckecked</param>
 /// <returns>true if <c>n</c> is prime, false if not</returns>
-bool is_prime(int n)
+bool is_prime(unsigned int n)
 {
     if (n <= 1)
         return false;
-    for (int i = 2; i < (int)(sqrt(n)) + 1; i++) {
+    unsigned int upper = (unsigned int)sqrt((float)n);
+
+    for (unsigned int i = 2; i < upper; i++) {
         if (n % i == 0)
             return false;
     }
     return true;
 }
 
+
 /// <summary>
 /// Find prime factors of <c>n</c>.
 /// </summary>
 /// <param name="n">Integer number to find the prime factors of</param>
 /// <returns>Returns a <c>std::vector</c> of prime factors of <c>n</c></returns>
-std::vector<int>* prime_factorize(int n)
+std::vector<unsigned int>* prime_factorize(unsigned int n)
 {
-    std::vector<int>* factors = new std::vector<int>;
-    if (is_prime(n)) {
-        factors->push_back(n);
-        factors->shrink_to_fit();
-        return factors;
+    std::vector<unsigned int>* factors = new std::vector<unsigned int>;
+    std::vector<unsigned int>* all_factors = new std::vector<unsigned int>;
+    for (unsigned int i = 2; i < n; i++)
+    {
+        if (n % 1 == 0 && is_prime(i))
+            factors->push_back(i);
     }
-    std::vector<int> primes;
-    for (int i = 0; i < n; i++) {
-        if (is_prime(i))
-            primes.push_back(i);
-    }
-    int i = 0;
+    unsigned int i = 0;
     while (n != 1) {
-        if (n % primes.at(i) == 0) {
-            factors->push_back(primes.at(i));
-            n /= primes.at(i);
-        }
-        else {
-            i += 1;
-        }
+        if (n % factors->at(i) == 0)
+            all_factors->push_back(factors->at(i));
+        else
+            i++;
     }
-    factors->shrink_to_fit();
-    return factors;
+    return all_factors;
 }
 
 /// <summary>
