@@ -1,6 +1,7 @@
 #include <iostream>     // std::cout and printf
 #include <vector>       // std::vector
-//#include <math.h>       // quick maffs
+#include <math.h>       // sqrt
+#include <limits.h>     // INT_MAX
 
 
 enum class _OutputFormat {
@@ -11,11 +12,11 @@ enum class _OutputFormat {
     BRACKETS
 };
 
-int input;
-bool is_prime(int);
-std::vector<int>* prime_factorize(int);
-void print_prime_factors_inner(std::vector<int>&);
-void print_prime_factors(std::vector<int>&, _OutputFormat);
+unsigned int input;
+bool is_prime(unsigned int);
+std::vector<unsigned int>* prime_factorize(unsigned int);
+void print_prime_factors_inner(std::vector<unsigned int>&);
+void print_prime_factors(std::vector<unsigned int>&, _OutputFormat);
 
 
 /// <summary>
@@ -53,11 +54,14 @@ std::vector<unsigned int>* prime_factorize(unsigned int n)
     }
     unsigned int i = 0;
     while (n != 1) {
-        if (n % factors->at(i) == 0)
+        if (n % factors->at(i) == 0) {
             all_factors->push_back(factors->at(i));
-        else
+            n /= factors->at(i);
+        } else {
             i++;
+        }
     }
+    delete factors;
     return all_factors;
 }
 
@@ -66,9 +70,9 @@ std::vector<unsigned int>* prime_factorize(unsigned int n)
 /// </summary>
 /// <param name="result"><c>std::vector</c> made up of prime factors</param>
 /// <param name="format">which output format you would like</param>
-void print_prime_factors(std::vector<int>& result, _OutputFormat format = _OutputFormat::BRACKETS)
+void print_prime_factors(std::vector<unsigned int>* result, _OutputFormat format = _OutputFormat::BRACKETS)
 {
-    if (result.empty()) {
+    if (result->empty()) {
         switch (format)
         {
             /*
@@ -84,34 +88,34 @@ void print_prime_factors(std::vector<int>& result, _OutputFormat format = _Outpu
         switch (format)
         {
         case _OutputFormat::COMMA_NO_SPACE:
-            for (auto n : result)
+            for (auto n : *result)
                 std::cout << n << ",";
             std::cout << "\b " << std::endl;
             break;
         case _OutputFormat::COMMA_SPACE:
-            print_prime_factors_inner(result);
+            print_prime_factors_inner(*result);
             std::cout << " " << std::endl;
             break;
         case _OutputFormat::PARENTHESES:
             std::cout << "(";
-            print_prime_factors_inner(result);
+            print_prime_factors_inner(*result);
             std::cout << ")" << std::endl;
             break;
         case _OutputFormat::BRACES:
             std::cout << "{";
-            print_prime_factors_inner(result);
+            print_prime_factors_inner(*result);
             std::cout << "}" << std::endl;
             break;
         case _OutputFormat::BRACKETS:
             std::cout << "[";
-            print_prime_factors_inner(result);
+            print_prime_factors_inner(*result);
             std::cout << "]" << std::endl;
             break;
         }
     }
 }
 // Helper function for `print_prime_factors`
-void print_prime_factors_inner(std::vector<int>& result)
+void print_prime_factors_inner(std::vector<unsigned int>& result)
 {
     for (auto n : result)
         std::cout << n << ", ";
@@ -121,7 +125,7 @@ void print_prime_factors_inner(std::vector<int>& result)
 
 int main(int argc, char** argv)
 {
-    extern int input;
+    extern unsigned int input;
 
     /**
     * TODO: Print error message when given decimal input
@@ -140,9 +144,9 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
     else {
-        input = atoi(argv[1]);
-        std::vector<int>* result = prime_factorize(input);
-        print_prime_factors(*result);
+        input = (unsigned int)atoi(argv[1]);
+        std::vector<unsigned int>* result = prime_factorize(input);
+        print_prime_factors(result);
         delete result;
     }
 
