@@ -2,6 +2,7 @@
 #include <vector>       // std::vector
 #include <math.h>       // sqrt
 #include <limits.h>     // INT_MAX
+#include <stdlib.h>     // strtoull
 
 
 enum class _OutputFormat {
@@ -12,11 +13,11 @@ enum class _OutputFormat {
     BRACKETS
 };
 
-unsigned int input;
-bool is_prime(unsigned int);
-std::vector<unsigned int>* prime_factorize(unsigned int);
-void print_prime_factors_inner(std::vector<unsigned int>&);
-void print_prime_factors(std::vector<unsigned int>&, _OutputFormat);
+uint64_t input;
+bool is_prime(uint64_t);
+std::vector<uint64_t>* prime_factorize(uint64_t);
+void print_prime_factors_inner(std::vector<uint64_t>&);
+void print_prime_factors(std::vector<uint64_t>&, _OutputFormat);
 
 
 /// <summary>
@@ -24,13 +25,13 @@ void print_prime_factors(std::vector<unsigned int>&, _OutputFormat);
 /// </summary>
 /// <param name="n">integer to be ckecked</param>
 /// <returns>true if <c>n</c> is prime, false if not</returns>
-bool is_prime(unsigned int n)
+bool is_prime(uint64_t n)
 {
     if (n <= 1)
         return false;
-    unsigned int upper = (unsigned int)sqrt((float)n);
+    uint64_t upper = (uint64_t)sqrt((float)n);
 
-    for (unsigned int i = 2; i < upper; i++) {
+    for (uint64_t i = 2; i < upper; i++) {
         if (n % i == 0)
             return false;
     }
@@ -43,25 +44,26 @@ bool is_prime(unsigned int n)
 /// </summary>
 /// <param name="n">Integer number to find the prime factors of</param>
 /// <returns>Returns a <c>std::vector</c> of prime factors of <c>n</c></returns>
-std::vector<unsigned int>* prime_factorize(unsigned int n)
+std::vector<uint64_t>* prime_factorize(uint64_t n)
 {
-    std::vector<unsigned int>* factors = new std::vector<unsigned int>;
-    std::vector<unsigned int>* all_factors = new std::vector<unsigned int>;
-    for (unsigned int i = 2; i < n; i++)
+    std::vector<uint64_t>* all_factors = new std::vector<uint64_t>;
+    std::vector<uint64_t> factors;
+    if (n % 2 == 0)
+        factors.push_back(2);
+    for (uint64_t i = 3; i <= n; i += 2)
     {
-        if (n % 1 == 0 && is_prime(i))
-            factors->push_back(i);
+        if (n % i == 0 && is_prime(i))
+            factors.push_back(i);
     }
-    unsigned int i = 0;
+    size_t j = 0;
     while (n != 1) {
-        if (n % factors->at(i) == 0) {
-            all_factors->push_back(factors->at(i));
-            n /= factors->at(i);
+        if (n % factors.at(j) == 0) {
+            all_factors->push_back(factors.at(j));
+            n /= factors.at(j);
         } else {
-            i++;
+            j++;
         }
     }
-    delete factors;
     return all_factors;
 }
 
@@ -70,7 +72,7 @@ std::vector<unsigned int>* prime_factorize(unsigned int n)
 /// </summary>
 /// <param name="result"><c>std::vector</c> made up of prime factors</param>
 /// <param name="format">which output format you would like</param>
-void print_prime_factors(std::vector<unsigned int>* result, _OutputFormat format = _OutputFormat::BRACKETS)
+void print_prime_factors(std::vector<uint64_t>* result, _OutputFormat format = _OutputFormat::BRACKETS)
 {
     if (result->empty()) {
         switch (format)
@@ -115,7 +117,7 @@ void print_prime_factors(std::vector<unsigned int>* result, _OutputFormat format
     }
 }
 // Helper function for `print_prime_factors`
-void print_prime_factors_inner(std::vector<unsigned int>& result)
+void print_prime_factors_inner(std::vector<uint64_t>& result)
 {
     for (auto n : result)
         std::cout << n << ", ";
@@ -125,27 +127,30 @@ void print_prime_factors_inner(std::vector<unsigned int>& result)
 
 int main(int argc, char** argv)
 {
-    extern unsigned int input;
+    extern uint64_t input;
 
     /**
     * TODO: Print error message when given decimal input
     */
 
+    char* pEnd;
+    input = strtoull(argv[1], &pEnd, 10);
+
     if (argc != 2) {
         fprintf(stderr, "Usage: %s [number]\n", argv[0]);
+        fprintf(stderr, "wrong amount of argumenrs\n");
         return EXIT_FAILURE;
     }
-    else if (atoi(argv[1]) <= 0) {
+    else if (input <= 0) {
         fprintf(stderr, "Usage: %s [number]\n", argv[0]);
         return EXIT_FAILURE;
     }
-    else if (atoi(argv[1]) >= INT_MAX){
-        fprintf(stderr, "Input number is too big! Input limits are %i to %i\n", 0, INT_MAX);
+    else if (input >= ULLONG_MAX){
+        fprintf(stderr, "Input number is too big! Input limits are %i to %llu\n", 0, ULLONG_MAX);
         return EXIT_FAILURE;
     }
     else {
-        input = (unsigned int)atoi(argv[1]);
-        std::vector<unsigned int>* result = prime_factorize(input);
+        std::vector<uint64_t>* result = prime_factorize(input);
         print_prime_factors(result);
         delete result;
     }
