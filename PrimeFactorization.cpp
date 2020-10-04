@@ -13,7 +13,7 @@ enum class _OutputFormat {
     BRACKETS
 };
 
-uint64_t input;
+uint64_t input;                                                     /* Walla bror, dette er input as */
 bool is_prime(uint64_t);
 std::vector<uint64_t>* prime_factorize(uint64_t);
 void print_prime_factors_inner(std::vector<uint64_t>&);
@@ -37,7 +37,6 @@ bool is_prime(uint64_t n)
     }
     return true;
 }
-
 
 /// <summary>
 /// Find prime factors of <c>n</c>.
@@ -116,6 +115,7 @@ void print_prime_factors(std::vector<uint64_t>* result, _OutputFormat format = _
         }
     }
 }
+
 // Helper function for `print_prime_factors`
 void print_prime_factors_inner(std::vector<uint64_t>& result)
 {
@@ -124,14 +124,9 @@ void print_prime_factors_inner(std::vector<uint64_t>& result)
     std::cout << "\b\b";
 }
 
-
 int main(int argc, char** argv)
 {
-    extern uint64_t input;
-
-    /**
-    * TODO: Print error message when given decimal input
-    */
+    // extern uint64_t input; /* C-style global variable */
 
     char* pEnd;
     input = strtoull(argv[1], &pEnd, 10);
@@ -153,7 +148,6 @@ int main(int argc, char** argv)
         std::vector<uint64_t>* result = prime_factorize(input);
         print_prime_factors(result);
         delete result;
+        return EXIT_SUCCESS;
     }
-
-    return EXIT_SUCCESS;
 }
