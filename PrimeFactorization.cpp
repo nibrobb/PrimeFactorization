@@ -126,22 +126,16 @@ void print_prime_factors_inner(std::vector<uint64_t>& result)
 
 int main(int argc, char** argv)
 {
-    // extern uint64_t input; /* C-style global variable */
-
     char* pEnd;
     input = strtoull(argv[1], &pEnd, 10);
 
     if (argc != 2) {
         fprintf(stderr, "Usage: %s [number]\n", argv[0]);
-        fprintf(stderr, "wrong amount of argumenrs\n");
+        fprintf(stderr, "Wrong amount of arguments\n");
         return EXIT_FAILURE;
     }
-    else if (input <= 0) {
-        fprintf(stderr, "Usage: %s [number]\n", argv[0]);
-        return EXIT_FAILURE;
-    }
-    else if (input >= ULLONG_MAX){
-        fprintf(stderr, "Input number is too big! Input limits are %i to %llu\n", 0, ULLONG_MAX);
+    else if (input <= 0 || input >= ULLONG_MAX){
+        fprintf(stderr, "Input of out range! Input limits are %i to %llu\n", 1, ULLONG_MAX);
         return EXIT_FAILURE;
     }
     else {
