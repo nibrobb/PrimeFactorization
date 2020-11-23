@@ -16,8 +16,8 @@ enum class _OutputFormat {
 uint64_t input;                                                     /* Walla bror, dette er input as */
 bool is_prime(uint64_t);
 std::vector<uint64_t>* prime_factorize(uint64_t);
-void print_prime_factors_inner(std::vector<uint64_t>&);
-void print_prime_factors(std::vector<uint64_t>&, _OutputFormat);
+void print_prime_factors_inner(std::vector<uint64_t>*);
+void print_prime_factors(std::vector<uint64_t>*, _OutputFormat);
 
 
 /// <summary>
@@ -94,22 +94,22 @@ void print_prime_factors(std::vector<uint64_t>* result, _OutputFormat format = _
             std::cout << "\b " << std::endl;
             break;
         case _OutputFormat::COMMA_SPACE:
-            print_prime_factors_inner(*result);
+            print_prime_factors_inner(result);
             std::cout << " " << std::endl;
             break;
         case _OutputFormat::PARENTHESES:
             std::cout << "(";
-            print_prime_factors_inner(*result);
+            print_prime_factors_inner(result);
             std::cout << ")" << std::endl;
             break;
         case _OutputFormat::BRACES:
             std::cout << "{";
-            print_prime_factors_inner(*result);
+            print_prime_factors_inner(result);
             std::cout << "}" << std::endl;
             break;
         case _OutputFormat::BRACKETS:
             std::cout << "[";
-            print_prime_factors_inner(*result);
+            print_prime_factors_inner(result);
             std::cout << "]" << std::endl;
             break;
         }
@@ -117,9 +117,9 @@ void print_prime_factors(std::vector<uint64_t>* result, _OutputFormat format = _
 }
 
 // Helper function for `print_prime_factors`
-void print_prime_factors_inner(std::vector<uint64_t>& result)
+void print_prime_factors_inner(std::vector<uint64_t> *result)
 {
-    for (auto n : result)
+    for (auto n : *result)
         std::cout << n << ", ";
     std::cout << "\b\b";
 }
