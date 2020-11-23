@@ -126,21 +126,40 @@ void print_prime_factors_inner(std::vector<uint64_t> *result)
 
 int main(int argc, char** argv)
 {
+    if (argc < 2) {
+        fprintf(stderr, "Usage: %s [number] [format]\n", argv[0]);
+        fprintf(stderr, "Number:\n");
+        fprintf(stderr, "\t\tCan be any integer from 1 up to %llu\n", ULLONG_MAX-1);
+        fprintf(stderr, "Format:\n");
+        fprintf(stderr, "0\t\tOutput printed with comma as seperator, no space\n");
+        fprintf(stderr, "1\t\tOutput printed with comma as seperator, with space\n");
+        fprintf(stderr, "2\t\tOutput printed with parentheses\n");
+        fprintf(stderr, "3\t\tOutput printed with braces\n");
+        fprintf(stderr, "4\t\tDefault: output printed with brackets\n");
+        return EXIT_FAILURE;
+    }
+
     char* pEnd;
     input = strtoull(argv[1], &pEnd, 10);
 
-    if (argc != 2) {
-        fprintf(stderr, "Usage: %s [number]\n", argv[0]);
-        fprintf(stderr, "Wrong amount of arguments\n");
-        return EXIT_FAILURE;
-    }
-    else if (input <= 0 || input >= ULLONG_MAX){
-        fprintf(stderr, "Input of out range! Input limits are %i to %llu\n", 1, ULLONG_MAX);
+    if (input <= 0 || input >= ULLONG_MAX-1){
+        fprintf(stderr, "Input of out range! Input limits are %i to %llu\n", 1, ULLONG_MAX-1);
         return EXIT_FAILURE;
     }
     else {
+        _OutputFormat format;
+        if (argv[2] == NULL)
+        {
+            format = _OutputFormat::BRACKETS;
+        }
+        format = (_OutputFormat)atoi(argv[2]);
+        if ((int)format < 0 || (int)format > 4)
+        {
+            format = _OutputFormat::BRACKETS;   /* Default case, print with brackets */
+        }
+
         std::vector<uint64_t>* result = prime_factorize(input);
-        print_prime_factors(result);
+        print_prime_factors(result, format);
         delete result;
         return EXIT_SUCCESS;
     }
